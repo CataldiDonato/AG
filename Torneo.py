@@ -11,7 +11,7 @@ CiclosPrograma = 20
 
 coef = (2**30)-1
 
-def f(x):
+def f(x):   
     return (x/coef)**2
 
 def LlenarCromosomasAlAzar():
@@ -90,80 +90,68 @@ def correrAlgoritmo(verbose=True):
             # Muestra el mejor cromosoma de esta generación
             idxMejor = funcionObjetivo.index(maximo)
             print(f"Mejor cromosoma:     {''.join(map(str, cromosomas[idxMejor]))}")
-            print(f"Valor decimal:       {decimales[idxMejor]}")
+            print(f"Valor decimal:       {decimales[idxMejor]}")  
 
-        # Ruleta
-        """ruleta = []
-        for i in range(len(funcionObjetivo)):
-            for j in range(round(fitness[i]*100)):
-                ruleta.append(i)"""
-                
-        # Torneo ( Aclaracion: no sabia bien que metodo usar, por lo que decidi usar Torneo de Reemplazo (o Steady-State).)
+        #Torneo
 
+        cantJugadores=4
+        jugadoresFitness=[]
+        jugadores=[]
         cromosomasHijos = []
-        for i in range(int(len(funcionObjetivo)/4)):
-
-            # Pareja 1
-            padre1 = cromosomas[random.randint(0, len(cromosomas)-1)]
-            padre2 = cromosomas[random.randint(0, len(cromosomas)-1)]
-            indicePadre1 = cromosomas.index(padre1)
-            indicePadre2 = cromosomas.index(padre2)
-            fitnessPadre1 = fitness[indicePadre1]
-            fitnessPadre2 = fitness[indicePadre2]
-
-            if fitnessPadre1 > fitnessPadre2:
-                padreGanador1 = padre1
-            else:
-                padreGanador1 = padre2
-
-            # Pareja 2
-            padre3 = cromosomas[random.randint(0, len(cromosomas)-1)]
-            padre4 = cromosomas[random.randint(0, len(cromosomas)-1)]
-            indicePadre3 = cromosomas.index(padre3)
-            indicePadre4 = cromosomas.index(padre4)
-            fitnessPadre3 = fitness[indicePadre3]
-            fitnessPadre4 = fitness[indicePadre4]
-
-            if fitnessPadre3 > fitnessPadre4:
-                padreGanador2 = padre3
-            else:
-                padreGanador2 = padre4
-
-            hijo1=padreGanador1
-            hijo2=padreGanador2
-
-            cromosomasHijos.append(padreGanador2)
-            cromosomasHijos.append(padreGanador1)
-            cromosomasHijos.append(hijo1)
-            cromosomasHijos.append(hijo2)
-
-
-
-
-
-        # CrossOver
-        """cromosomasHijos = []
+        
         for i in range(int(len(funcionObjetivo)/2)):
+            #Padre 1
+            jugadoresFitness=[]
+            jugadores=[]
+            for cj in range(cantJugadores):
+                jugador = cromosomas[random.randint(0, len(cromosomas)-1)]
+                indiceJugador = cromosomas.index(jugador)
+                fitnessJugador = fitness[indiceJugador]
+                jugadores.append([jugador, fitnessJugador])
+
+            maxFitness1 = 0
+            maxJugador1 = []
+            for jg in range(cantJugadores):
+                if maxFitness1 < jugadores[jg][1]:
+                    maxFitness1 = jugadores[jg][1]
+                    maxJugador1 = jugadores[jg][0]
+
+            #Padre 2
+            jugadoresFitness=[]
+            jugadores=[]
+            for cj in range(cantJugadores):
+                jugador = cromosomas[random.randint(0, len(cromosomas)-1)]
+                indiceJugador = cromosomas.index(jugador)
+                fitnessJugador = fitness[indiceJugador]
+                jugadores.append([jugador, fitnessJugador])
+
+            maxFitness2 = 0
+            maxJugador2 = []
+            for jg in range(cantJugadores):
+                if maxFitness2 < jugadores[jg][1]:
+                    maxFitness2 = jugadores[jg][1]
+                    maxJugador2 = jugadores[jg][0]
+
+             # CrossOver
             hijo1 = []
             hijo2 = []
-            padre1 = cromosomas[ruleta[random.randint(0, len(ruleta)-1)]]
-            padre2 = cromosomas[ruleta[random.randint(0, len(ruleta)-1)]]
+            
             crossover = random.randint(1, 100)
             if crossover <= ProbabilidadCrossover*100:
                 corte = random.randint(1, 28)
-                for j in range(len(padre1)):
+                for j in range(len(maxJugador1)):
                     if j <= corte:
-                        hijo1.append(padre1[j])
-                        hijo2.append(padre2[j])
+                        hijo1.append(maxJugador1[j])
+                        hijo2.append(maxJugador2[j])
                     else:
-                        hijo1.append(padre2[j])
-                        hijo2.append(padre1[j])
+                        hijo1.append(maxJugador2[j])
+                        hijo2.append(maxJugador1[j])
             else:
-                hijo1 = padre1
-                hijo2 = padre2
+                hijo1 = maxJugador1
+                hijo2 = maxJugador2
 
             cromosomasHijos.append(hijo1)
-            cromosomasHijos.append(hijo2)"""
+            cromosomasHijos.append(hijo2)
 
         # Mutacion
         for i in range(len(cromosomasHijos)):
@@ -196,7 +184,7 @@ def imprimirTablaResumen(todasLasEstadisticas, nCorridas):
         idxPeorCorrida  = minimos.index(min(minimos))
         cromMax = "".join(map(str, todasLasEstadisticas[idxMejorCorrida][gen][4]))
         cromMin = "".join(map(str, todasLasEstadisticas[idxPeorCorrida][gen][5]))
-
+        
 
         print(f"{gen+1:<6} {cromMax:<35}{sum(maximos)/nCorridas:<14.6f} {cromMin:<35} {sum(minimos)/nCorridas:<14.6f} {sum(promedios)/nCorridas:<14.6f} {sum(desvs)/nCorridas:<12.6f} ")
 
@@ -251,16 +239,28 @@ def graficarEstadisticas(todasLasEstadisticas, nCorridas):
 # Corre 20 veces (la primera con tablas detalladas)
 stats20, tTotal20, tProm20 = ejecutarNCorridas(20, verbose=True)
 imprimirTablaResumen(stats20, 20)
+fitMaxProm20 = sum(corrida[-1][0] for corrida in stats20) / 20
+desvProm20 = sum(corrida[-1][3] for corrida in stats20) / 20
+print(f"  Fitness Máximo Promedio: {fitMaxProm20:.6f}")
+print(f"  Desviación Estándar Promedio: {desvProm20:.6f}")
 print(f"  Tiempo total: {tTotal20:.6f}s  |  Tiempo promedio: {tProm20:.6f}s")
 
 # 100 corridas
 stats100, tTotal100, tProm100 = ejecutarNCorridas(100)
 imprimirTablaResumen(stats100, 100)
+fitMaxProm100 = sum(corrida[-1][0] for corrida in stats100) / 100
+desvProm100 = sum(corrida[-1][3] for corrida in stats100) / 100
+print(f"  Fitness Máximo Promedio: {fitMaxProm100:.6f}")
+print(f"  Desviación Estándar Promedio: {desvProm100:.6f}")
 print(f"  Tiempo total: {tTotal100:.6f}s  |  Tiempo promedio: {tProm100:.6f}s")
 
 # 200 corridas
 stats200, tTotal200, tProm200 = ejecutarNCorridas(200)
 imprimirTablaResumen(stats200, 200)
+fitMaxProm200 = sum(corrida[-1][0] for corrida in stats200) / 200
+desvProm200 = sum(corrida[-1][3] for corrida in stats200) / 200
+print(f"  Fitness Máximo Promedio: {fitMaxProm200:.6f}")
+print(f"  Desviación Estándar Promedio: {desvProm200:.6f}")
 print(f"  Tiempo total: {tTotal200:.6f}s  |  Tiempo promedio: {tProm200:.6f}s")
 
 # Tabla comparativa de tiempos

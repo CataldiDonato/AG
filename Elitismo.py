@@ -211,6 +211,10 @@ def graficarEstadisticas(todasLasEstadisticas, nCorridas):
 # 100 corridas (la primera con tablas detalladas)
 stats100, tTotal100, tProm100 = ejecutarNCorridas(100, verbose=True)
 imprimirTablaResumen(stats100, 100)
+fitMaxProm100 = sum(corrida[-1][0] for corrida in stats100) / 100
+desvProm100 = sum(corrida[-1][3] for corrida in stats100) / 100
+print(f"  Fitness Máximo Promedio: {fitMaxProm100:.6f}")
+print(f"  Desviación Estándar Promedio: {desvProm100:.6f}")
 print(f"  Tiempo total: {tTotal100:.6f}s  |  Tiempo promedio: {tProm100:.6f}s")
 
 # Tabla comparativa de tiempos

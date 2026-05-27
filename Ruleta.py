@@ -155,7 +155,7 @@ def imprimirTablaResumen(todasLasEstadisticas, nCorridas):
         cromMax = "".join(map(str, todasLasEstadisticas[idxMejorCorrida][gen][4]))
         cromMin = "".join(map(str, todasLasEstadisticas[idxPeorCorrida][gen][5]))
 
-
+        
         print(f"{gen+1:<6} {cromMax:<35}{sum(maximos)/nCorridas:<14.6f} {cromMin:<35} {sum(minimos)/nCorridas:<14.6f} {sum(promedios)/nCorridas:<14.6f} {sum(desvs)/nCorridas:<12.6f} ")
 
 
@@ -209,16 +209,28 @@ def graficarEstadisticas(todasLasEstadisticas, nCorridas):
 # Corre 20 veces (la primera con tablas detalladas)
 stats20, tTotal20, tProm20 = ejecutarNCorridas(20, verbose=True)
 imprimirTablaResumen(stats20, 20)
+fitMaxProm20 = sum(corrida[-1][0] for corrida in stats20) / 20
+desvProm20 = sum(corrida[-1][3] for corrida in stats20) / 20
+print(f"  Fitness Máximo Promedio: {fitMaxProm20:.6f}")
+print(f"  Desviación Estándar Promedio: {desvProm20:.6f}")
 print(f"  Tiempo total: {tTotal20:.6f}s  |  Tiempo promedio: {tProm20:.6f}s")
 
 # 100 corridas
 stats100, tTotal100, tProm100 = ejecutarNCorridas(100)
 imprimirTablaResumen(stats100, 100)
+fitMaxProm100 = sum(corrida[-1][0] for corrida in stats100) / 100
+desvProm100 = sum(corrida[-1][3] for corrida in stats100) / 100
+print(f"  Fitness Máximo Promedio: {fitMaxProm100:.6f}")
+print(f"  Desviación Estándar Promedio: {desvProm100:.6f}")
 print(f"  Tiempo total: {tTotal100:.6f}s  |  Tiempo promedio: {tProm100:.6f}s")
 
 # 200 corridas
 stats200, tTotal200, tProm200 = ejecutarNCorridas(200)
 imprimirTablaResumen(stats200, 200)
+fitMaxProm200 = sum(corrida[-1][0] for corrida in stats200) / 200
+desvProm200 = sum(corrida[-1][3] for corrida in stats200) / 200
+print(f"  Fitness Máximo Promedio: {fitMaxProm200:.6f}")
+print(f"  Desviación Estándar Promedio: {desvProm200:.6f}")
 print(f"  Tiempo total: {tTotal200:.6f}s  |  Tiempo promedio: {tProm200:.6f}s")
 
 # Tabla comparativa de tiempos
